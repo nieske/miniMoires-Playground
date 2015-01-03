@@ -18,6 +18,7 @@ class Memoires {
     init(person: Person) {
         self.person = person
     }
+    
     func addEntry(entry: Entry) -> Void {
         if entry.year >= person.birthyear {
             entries[entry.year] = entry
@@ -31,9 +32,11 @@ class Memoires {
             // also maybe option to override (e.g. year my parents met)
         }
     }
+    
     func getEntry(year: Int) -> Entry? {
         return entries[year]
     }
+    
     func save() -> Void {
         let documentDirs = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.AllDomainsMask, true)
         
@@ -50,6 +53,25 @@ class Memoires {
             let text2 = String(contentsOfFile: saveFile, encoding: NSUTF8StringEncoding, error: nil)
         }
     }
+    
+    func saveEntry(year: Int) -> Void {
+        let documentDirs = NSSearchPathForDirectoriesInDomains(NSSearchPathDirectory.DocumentDirectory, NSSearchPathDomainMask.AllDomainsMask, true)
+
+        if documentDirs != nil {
+            let fileName = "\(person.name).\(year).txt"
+            let dir = documentDirs[0] as String
+            let saveFile = dir.stringByAppendingPathComponent(fileName)
+            let text = entries[year]?.text
+            
+            // writing
+            if text != nil {
+                    text!.writeToFile(saveFile, atomically: false, encoding: NSUTF8StringEncoding, error: nil)
+            }
+            
+            // reading
+            let text2 = String(contentsOfFile: saveFile, encoding: NSUTF8StringEncoding, error: nil)
+        }
+    }
 }
 
 func makeText(dictionary: [Int: Entry]) -> String {
@@ -59,7 +81,6 @@ func makeText(dictionary: [Int: Entry]) -> String {
     }
     return text
 }
-
 
 class Entry {
     var text: String
@@ -86,6 +107,13 @@ nieskesMemoires.getEntry(1032)
 makeText(nieskesMemoires.entries)
 
 nieskesMemoires.save()
+nieskesMemoires.saveEntry(2014)
+nieskesMemoires.saveEntry(1901)
+nieskesMemoires.saveEntry(1983)
+
+
+
+
 
 
 
